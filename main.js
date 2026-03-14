@@ -18,7 +18,7 @@ themeToggle.addEventListener('click', () => {
 });
 
 function updateToggleText(theme) {
-  themeToggle.textContent = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+  themeToggle.textContent = theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환';
 }
 
 // Lotto Logic

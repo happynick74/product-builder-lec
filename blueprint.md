@@ -1,30 +1,30 @@
-# Lotto Number Recommendation Site
+# 로또 번호 추천 사이트
 
-## Overview
+## 개요
 
-This project is a modern web application that generates random lottery numbers. It features a responsive design and supports both Dark and Light themes to provide a comfortable user experience.
+이 프로젝트는 현대적인 웹 기술을 사용하여 로또 번호를 생성하는 애플리케이션입니다. 반응형 디자인을 지원하며, 다크 모드와 라이트 모드 전환 기능을 통해 사용자에게 편안한 UI를 제공합니다.
 
-## Implemented Features
+## 구현된 기능
 
-*   **UI:**
-    *   Clean and modern user interface with CSS variables.
-    *   Interactive theme toggle button (Dark Mode / Light Mode).
-    *   Responsive layout for mobile and desktop.
-*   **Theme Support:**
-    *   **Dark Mode (Default):** Deep dark background with high-contrast elements.
-    *   **Light Mode:** Clean white background with soft shadows.
-    *   Persistent theme selection using `localStorage`.
-*   **Functionality:**
-    *   Generates 6 unique random numbers (1-45).
-    *   Numbers are automatically sorted in ascending order.
-    *   Real-time display update without page reload.
-*   **Visual Effects:**
-    *   Smooth transitions for theme switching.
-    *   Depth effects using multi-layered shadows.
-    *   Interactive button animations.
+*   **UI/UX:**
+    *   CSS 변수를 활용한 깔끔하고 현대적인 인터페이스.
+    *   상단 테마 토글 버튼 (다크 모드 / 라이트 모드).
+    *   모바일과 데스크톱을 모두 지원하는 반응형 레이아웃.
+*   **테마 지원:**
+    *   **다크 모드 (기본):** 어두운 배경과 고대비 요소.
+    *   **라이트 모드:** 깨끗한 흰색 배경과 부드러운 그림자.
+    *   `localStorage`를 이용한 테마 설정 유지.
+*   **주요 기능:**
+    *   1~45 사이의 고유한 6개 숫자 생성.
+    *   생성된 숫자를 오름차순으로 자동 정렬.
+    *   페이지 새로고침 없이 즉각적인 번호 업데이트.
+*   **시각 효과:**
+    *   테마 전환 시 부드러운 애니메이션 효과.
+    *   다층 그림자를 이용한 깊이감 있는 카드 UI.
+    *   버튼 클릭 및 호버 시 인터랙티브 효과.
 
-## Technical Details
+## 기술 스택
 
-*   **HTML5 & CSS3:** Uses semantic tags and modern CSS features like Custom Properties (Variables) and Attribute Selectors for theming.
-*   **Vanilla JavaScript:** Pure ES6+ logic for number generation and theme state management.
-*   **State Management:** LocalStorage is used to remember the user's theme preference across sessions.
+*   **HTML5 & CSS3:** 시맨틱 태그와 현대적인 CSS 기능 (변수, 속성 선택자) 사용.
+*   **Vanilla JavaScript (ES6+):** 프레임워크 없는 순수 자바스크립트 로직.
+*   **상태 관리:** LocalStorage를 활용한 사용자 설정 저장.
