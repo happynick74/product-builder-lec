@@ -2,29 +2,29 @@
 
 ## Overview
 
-This project is a simple web application that generates and displays recommended lottery numbers. It's built with modern, framework-less web technologies (HTML, CSS, and JavaScript).
+This project is a modern web application that generates random lottery numbers. It features a responsive design and supports both Dark and Light themes to provide a comfortable user experience.
 
 ## Implemented Features
 
 *   **UI:**
-    *   A clean and modern user interface.
-    *   A dedicated section to display the generated lottery numbers.
-    *   A button to trigger the generation of new numbers.
+    *   Clean and modern user interface with CSS variables.
+    *   Interactive theme toggle button (Dark Mode / Light Mode).
+    *   Responsive layout for mobile and desktop.
+*   **Theme Support:**
+    *   **Dark Mode (Default):** Deep dark background with high-contrast elements.
+    *   **Light Mode:** Clean white background with soft shadows.
+    *   Persistent theme selection using `localStorage`.
 *   **Functionality:**
-    *   Generates 6 unique random numbers between 1 and 45.
-    *   Displays the generated numbers to the user.
-*   **Styling:**
-    *   A dark theme with contrasting colors for better readability.
-    *   Responsive design that works on both desktop and mobile devices.
+    *   Generates 6 unique random numbers (1-45).
+    *   Numbers are automatically sorted in ascending order.
+    *   Real-time display update without page reload.
+*   **Visual Effects:**
+    *   Smooth transitions for theme switching.
+    *   Depth effects using multi-layered shadows.
+    *   Interactive button animations.
 
-## Current Plan
+## Technical Details
 
-*   **Task:** Create a Lotto Number Recommendation Site.
-    1.  **Update `index.html`:**
-        *   Change the title and heading to reflect the site's purpose.
-        *   Add a container for the lottery numbers and a "Generate" button.
-    2.  **Update `main.js`:**
-        *   Implement a function to generate 6 unique random numbers.
-        *   Add an event listener to the button to generate and display the numbers.
-    3.  **Update `style.css`:**
-        *   Apply a modern and visually appealing style to the elements.
+*   **HTML5 & CSS3:** Uses semantic tags and modern CSS features like Custom Properties (Variables) and Attribute Selectors for theming.
+*   **Vanilla JavaScript:** Pure ES6+ logic for number generation and theme state management.
+*   **State Management:** LocalStorage is used to remember the user's theme preference across sessions.

@@ -1,6 +1,24 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #121212;
+  --container-bg: #f0f0f0;
+  --accent-color: #1e88e5;
+  --accent-hover: #1565c0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --container-bg: #333333;
+  --accent-color: #1e88e5;
+  --accent-hover: #1565c0;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
 body {
-  background-color: #121212;
-  color: #ffffff;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
@@ -8,6 +26,7 @@ body {
   justify-content: center;
   height: 100vh;
   margin: 0;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 h1 {
@@ -23,13 +42,15 @@ h1 {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #333;
+  background-color: var(--container-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 0.5rem;
   font-size: 1.5rem;
   font-weight: bold;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  transition: background-color 0.3s;
 }
 
 #generate-btn {
@@ -37,12 +58,37 @@ h1 {
   font-size: 1rem;
   border: none;
   border-radius: 8px;
-  background-color: #1e88e5;
+  background-color: var(--accent-color);
   color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 #generate-btn:hover {
-  background-color: #1565c0;
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+#generate-btn:active {
+  transform: translateY(0);
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+#theme-toggle:hover {
+  background-color: var(--accent-color);
+  color: #ffffff;
 }
