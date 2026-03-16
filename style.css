@@ -109,6 +109,10 @@
     backdrop-filter: blur(10px);
     min-height: 400px; /* Prevent collapse */
   }
+
+  #disqus_thread {
+    min-height: 240px;
+  }
 }
 
 @layer components {
@@ -246,6 +250,12 @@
     background-color: var(--accent);
     color: white;
     border-color: var(--accent);
+  }
+
+  .comments-status {
+    margin-top: 1rem;
+    text-align: center;
+    opacity: 0.75;
   }
 }
 
