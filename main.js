@@ -59,6 +59,58 @@ document.addEventListener('DOMContentLoaded', () => {
     displayNumbers(numbers);
   });
 
+  // --- Form Handling ---
+  const forms = [document.getElementById('contact-form'), document.getElementById('comment-form')];
+  
+  forms.forEach(form => {
+    if (!form) return;
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      // Feedback during submission
+      submitBtn.disabled = true;
+      submitBtn.textContent = '보내는 중...';
+      
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          submitBtn.textContent = '완료되었습니다!';
+          submitBtn.style.backgroundColor = 'oklch(0.7 0.1 140)'; // Success green
+          form.reset();
+          
+          setTimeout(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '';
+          }, 3000);
+        } else {
+          throw new Error('전송 실패');
+        }
+      } catch (error) {
+        submitBtn.textContent = '오류 발생. 다시 시도해 주세요.';
+        submitBtn.style.backgroundColor = 'oklch(0.6 0.15 20)'; // Error red
+        
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+          submitBtn.style.backgroundColor = '';
+        }, 3000);
+      }
+    });
+  });
+
   // Initialize with numbers
   displayNumbers(generateLottoNumbers());
 });
