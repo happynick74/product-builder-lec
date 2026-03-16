@@ -2,51 +2,23 @@
 
 @layer base {
   :root {
-    /* Colors using OKLCH for better perception and vibrancy */
-    --bg-l: 98%;
-    --bg-c: 0.01;
-    --bg-h: 250;
-    
-    --text-l: 20%;
-    --text-c: 0.02;
-    --text-h: 250;
-    
-    --accent-l: 60%;
-    --accent-c: 0.15;
-    --accent-h: 250;
-
-    --surface-l: 95%;
-    --surface-c: 0.01;
-    --surface-h: 250;
-
-    --bg: oklch(var(--bg-l) var(--bg-c) var(--bg-h));
-    --text: oklch(var(--text-l) var(--text-c) var(--text-h));
-    --accent: oklch(var(--accent-l) var(--accent-c) var(--accent-h));
-    --accent-hover: oklch(calc(var(--accent-l) - 10%) var(--accent-c) var(--accent-h));
-    --surface: oklch(var(--surface-l) var(--surface-c) var(--surface-h));
+    --bg: #f7f8fc;
+    --text: #242938;
+    --accent: #4f6df5;
+    --accent-hover: #3f59d3;
+    --surface: #eef1f8;
     --shadow: rgba(0, 0, 0, 0.08);
-    --border: oklch(var(--text-l) var(--text-c) var(--text-h) / 0.1);
+    --border: rgba(36, 41, 56, 0.1);
   }
 
   [data-theme="dark"] {
-    --bg-l: 18%;
-    --bg-c: 0.02;
-    --bg-h: 250;
-    
-    --text-l: 95%;
-    --text-c: 0.01;
-    --text-h: 250;
-    
-    --accent-l: 70%;
-    --accent-c: 0.12;
-    --accent-h: 210;
-
-    --surface-l: 24%;
-    --surface-c: 0.02;
-    --surface-h: 250;
-
+    --bg: #1c2230;
+    --text: #eef2ff;
+    --accent: #78a7ff;
+    --accent-hover: #5f8fe6;
+    --surface: #252d3f;
     --shadow: rgba(0, 0, 0, 0.4);
-    --border: oklch(var(--text-l) var(--text-c) var(--text-h) / 0.1);
+    --border: rgba(238, 242, 255, 0.1);
   }
 
   * {
@@ -171,7 +143,7 @@
     color: white;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 20px -5px oklch(var(--accent-l) var(--accent-c) var(--accent-h) / 0.4);
+    box-shadow: 0 10px 20px -5px rgba(79, 109, 245, 0.35);
     width: 100%;
     max-width: 250px;
   }
@@ -179,7 +151,7 @@
   #generate-btn:hover, #submit-btn:hover {
     background-color: var(--accent-hover);
     transform: translateY(-2px);
-    box-shadow: 0 15px 25px -5px oklch(var(--accent-l) var(--accent-c) var(--accent-h) / 0.5);
+    box-shadow: 0 15px 25px -5px rgba(79, 109, 245, 0.45);
   }
 
   /* Form Styles */
@@ -221,7 +193,7 @@
   input:focus, textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px oklch(var(--accent-l) var(--accent-c) var(--accent-h) / 0.15);
+    box-shadow: 0 0 0 4px rgba(79, 109, 245, 0.15);
   }
 
   #submit-btn {

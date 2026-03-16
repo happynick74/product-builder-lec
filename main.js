@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (response.ok) {
           submitBtn.textContent = '완료되었습니다!';
-          submitBtn.style.backgroundColor = 'oklch(0.7 0.1 140)'; // Success green
+          submitBtn.style.backgroundColor = '#3fa463';
           contactForm.reset();
           
           setTimeout(() => {
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (error) {
         submitBtn.textContent = '오류 발생. 다시 시도해 주세요.';
-        submitBtn.style.backgroundColor = 'oklch(0.6 0.15 20)'; // Error red
+        submitBtn.style.backgroundColor = '#d45555';
         
         setTimeout(() => {
           submitBtn.textContent = originalText;
