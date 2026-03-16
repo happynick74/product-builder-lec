@@ -60,24 +60,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // --- Form Handling ---
-  const forms = [document.getElementById('contact-form'), document.getElementById('comment-form')];
+  const contactForm = document.getElementById('contact-form');
   
-  forms.forEach(form => {
-    if (!form) return;
-    
-    form.addEventListener('submit', async (e) => {
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const submitBtn = form.querySelector('button[type="submit"]');
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
       
       // Feedback during submission
       submitBtn.disabled = true;
       submitBtn.textContent = '보내는 중...';
       
-      const formData = new FormData(form);
+      const formData = new FormData(contactForm);
       
       try {
-        const response = await fetch(form.action, {
+        const response = await fetch(contactForm.action, {
           method: 'POST',
           body: formData,
           headers: {
@@ -88,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
           submitBtn.textContent = '완료되었습니다!';
           submitBtn.style.backgroundColor = 'oklch(0.7 0.1 140)'; // Success green
-          form.reset();
+          contactForm.reset();
           
           setTimeout(() => {
             submitBtn.textContent = originalText;
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
       }
     });
-  });
+  }
 
   // Initialize with numbers
   displayNumbers(generateLottoNumbers());

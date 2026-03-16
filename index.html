@@ -47,25 +47,26 @@
 
   <section class="comments-section">
     <div class="comments-container">
-      <h2>댓글 남기기</h2>
-      <p class="section-desc">사용 후기나 개선 요청 사항을 자유롭게 남겨주세요.</p>
-      
-      <form action="https://formspree.io/f/maqpdqre" method="POST" class="contact-form" id="comment-form">
-        <!-- Identifying the form for the user's dashboard -->
-        <input type="hidden" name="_subject" value="[사용자 댓글] 새로운 댓글이 도착했습니다">
-        
-        <div class="form-group">
-          <label for="comment-email">이메일</label>
-          <input type="email" id="comment-email" name="email" placeholder="example@email.com" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="comment-message">댓글 내용</label>
-          <textarea id="comment-message" name="message" rows="4" placeholder="댓글을 입력해 주세요." required></textarea>
-        </div>
-        
-        <button type="submit" id="comment-submit-btn">댓글 등록하기</button>
-      </form>
+      <h2>댓글</h2>
+      <div id="disqus_thread"></div>
+      <script>
+          /**
+          *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+          *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+          /*
+          var disqus_config = function () {
+          this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+          this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+          };
+          */
+          (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://happynick.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+          })();
+      </script>
+      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </div>
   </section>
 
