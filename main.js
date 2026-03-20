@@ -1,150 +1,221 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const themeToggle = document.getElementById('theme-toggle');
-  const body = document.body;
-  const disqusThread = document.getElementById('disqus_thread');
-  const commentsStatus = document.getElementById('comments-status');
+// Teachable Machine Model URL
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/oC-44fsN3/";
 
-  // --- Theme Logic ---
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  body.setAttribute('data-theme', savedTheme);
-  updateToggleText(savedTheme);
+let model, webcam, maxPredictions;
+let isModelLoaded = false;
+let currentMode = 'webcam'; // 'webcam' or 'upload'
 
-  themeToggle.addEventListener('click', () => {
-    const currentTheme = body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+// DOM Elements
+const themeToggle = document.getElementById('theme-toggle');
+const modeWebcamBtn = document.getElementById('mode-webcam');
+const modeUploadBtn = document.getElementById('mode-upload');
+const webcamContainer = document.getElementById('webcam-container');
+const uploadContainer = document.getElementById('upload-container');
+const imageUpload = document.getElementById('image-upload');
+const imagePreview = document.getElementById('image-preview');
+const startBtn = document.getElementById('start-btn');
+const retryBtn = document.getElementById('retry-btn');
+const resultSection = document.getElementById('result-section');
+const labelContainer = document.getElementById('label-container');
+const resultMessage = document.getElementById('result-message');
+const webcamLoader = document.getElementById('webcam-loader');
+
+/**
+ * Initialize the Teachable Machine model
+ */
+async function initModel() {
+    try {
+        const modelURL = MODEL_URL + "model.json";
+        const metadataURL = MODEL_URL + "metadata.json";
+
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+        isModelLoaded = true;
+        
+        if (webcamLoader) webcamLoader.classList.add('hidden');
+        console.log("Model loaded successfully");
+    } catch (error) {
+        console.error("Failed to load model:", error);
+        if (webcamLoader) webcamLoader.textContent = "모델 로드 실패. 새로고침 해주세요.";
+    }
+}
+
+/**
+ * Setup and start the webcam
+ */
+async function setupWebcam() {
+    if (webcam) return;
+
+    const flip = true;
+    webcam = new tmImage.Webcam(400, 400, flip);
+    await webcam.setup();
+    await webcam.play();
+    webcamContainer.appendChild(webcam.canvas);
+}
+
+/**
+ * Prediction loop for webcam
+ */
+async function webcamLoop() {
+    if (currentMode !== 'webcam') return;
     
-    body.setAttribute('data-theme', newTheme);
+    webcam.update();
+    await predict(webcam.canvas);
+    window.requestAnimationFrame(webcamLoop);
+}
+
+/**
+ * Run prediction on an image or canvas
+ */
+async function predict(inputElement) {
+    if (!model) return;
+
+    const predictions = await model.predict(inputElement);
+    displayResults(predictions);
+}
+
+/**
+ * Display prediction results in the UI
+ */
+function displayResults(predictions) {
+    labelContainer.innerHTML = "";
+    
+    // Sort predictions by probability descending
+    predictions.sort((a, b) => b.probability - a.probability);
+
+    predictions.forEach(prediction => {
+        const percentage = (prediction.probability * 100).toFixed(0);
+        
+        const row = document.createElement('div');
+        row.className = 'prediction-row';
+        row.innerHTML = `
+            <div class="prediction-label">
+                <span>${prediction.className}</span>
+                <span>${percentage}%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: ${percentage}%"></div>
+            </div>
+        `;
+        labelContainer.appendChild(row);
+    });
+
+    // Set result message based on the top prediction
+    const topResult = predictions[0];
+    if (topResult.probability > 0.5) {
+        resultMessage.textContent = `당신은 ${topResult.className}상을 닮으셨네요!`;
+    } else {
+        resultMessage.textContent = "어떤 동물을 닮았는지 분석 중입니다...";
+    }
+}
+
+// --- Event Listeners ---
+
+// Theme Toggle
+themeToggle.addEventListener('click', () => {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+    themeToggle.textContent = isDark ? '다크 모드' : '라이트 모드';
     localStorage.setItem('theme', newTheme);
-    updateToggleText(newTheme);
-  });
+});
 
-  function updateToggleText(theme) {
-    themeToggle.textContent = theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환';
-  }
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+document.body.setAttribute('data-theme', savedTheme);
+themeToggle.textContent = savedTheme === 'dark' ? '라이트 모드' : '다크 모드';
 
-  function showCommentsStatus(message) {
-    if (!commentsStatus) {
-      return;
+// Mode Switching
+modeWebcamBtn.addEventListener('click', async () => {
+    currentMode = 'webcam';
+    modeWebcamBtn.classList.add('active');
+    modeUploadBtn.classList.remove('active');
+    webcamContainer.classList.remove('hidden');
+    uploadContainer.classList.add('hidden');
+    resultSection.classList.add('hidden');
+    retryBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    
+    if (isModelLoaded) await setupWebcam();
+});
+
+modeUploadBtn.addEventListener('click', () => {
+    currentMode = 'upload';
+    modeUploadBtn.classList.add('active');
+    modeWebcamBtn.classList.remove('active');
+    uploadContainer.classList.remove('hidden');
+    webcamContainer.classList.add('hidden');
+    resultSection.classList.add('hidden');
+    retryBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    
+    if (webcam) {
+        webcam.stop();
+        const canvas = webcamContainer.querySelector('canvas');
+        if (canvas) canvas.remove();
+        webcam = null;
     }
+});
 
-    commentsStatus.hidden = false;
-    commentsStatus.textContent = message;
-  }
+// Image Upload Handling
+imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  function getCanonicalPageUrl() {
-    if (!disqusThread) {
-      return '';
-    }
-
-    const explicitUrl = disqusThread.dataset.disqusUrl?.trim();
-
-    if (explicitUrl) {
-      return explicitUrl;
-    }
-
-    const url = new URL(window.location.href);
-    url.hash = '';
-    url.search = '';
-    return url.toString();
-  }
-
-  function initDisqus() {
-    if (!disqusThread) {
-      return;
-    }
-
-    const shortname = disqusThread.dataset.disqusShortname?.trim();
-    const identifier = disqusThread.dataset.disqusIdentifier?.trim() || window.location.pathname || 'home';
-    const title = disqusThread.dataset.disqusTitle?.trim() || document.title;
-    const canonicalUrl = getCanonicalPageUrl();
-    const { protocol, hostname } = window.location;
-    const isLocalPreview = protocol === 'file:' || ['localhost', '127.0.0.1', '::1'].includes(hostname) || hostname.endsWith('.local');
-
-    if (!shortname) {
-      showCommentsStatus('Disqus shortname이 설정되지 않아 댓글을 불러올 수 없습니다.');
-      return;
-    }
-
-    if (isLocalPreview) {
-      disqusThread.innerHTML = '';
-      showCommentsStatus('Disqus 댓글은 로컬 주소에서는 표시되지 않을 수 있습니다. 배포된 공개 URL에서 확인해 주세요.');
-      return;
-    }
-
-    window.disqus_config = function () {
-      this.page.url = canonicalUrl;
-      this.page.identifier = identifier;
-      this.page.title = title;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        imagePreview.src = event.target.result;
+        imagePreview.classList.remove('hidden');
+        uploadContainer.querySelector('.upload-label').classList.add('hidden');
     };
+    reader.readAsDataURL(file);
+});
 
-    const existingScript = document.querySelector('script[data-disqus-embed="true"]');
-
-    if (existingScript) {
-      return;
+// Start Analysis
+startBtn.addEventListener('click', async () => {
+    if (!isModelLoaded) {
+        alert("모델이 아직 로드되지 않았습니다. 잠시만 기다려주세요.");
+        return;
     }
 
-    const script = document.createElement('script');
-    script.src = `https://${shortname}.disqus.com/embed.js`;
-    script.async = true;
-    script.dataset.timestamp = String(Date.now());
-    script.dataset.disqusEmbed = 'true';
-    script.addEventListener('error', () => {
-      disqusThread.innerHTML = '';
-      showCommentsStatus('Disqus 스크립트를 불러오지 못했습니다. shortname 또는 도메인 설정을 확인해 주세요.');
-    });
-
-    document.body.appendChild(script);
-  }
-
-  // --- Form Handling ---
-  const contactForm = document.getElementById('contact-form');
-  
-  if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn.textContent;
-      
-      // Feedback during submission
-      submitBtn.disabled = true;
-      submitBtn.textContent = '보내는 중...';
-      
-      const formData = new FormData(contactForm);
-      
-      try {
-        const response = await fetch(contactForm.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
-        if (response.ok) {
-          submitBtn.textContent = '완료되었습니다!';
-          submitBtn.style.backgroundColor = '#3fa463';
-          contactForm.reset();
-          
-          setTimeout(() => {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            submitBtn.style.backgroundColor = '';
-          }, 3000);
-        } else {
-          throw new Error('전송 실패');
+    resultSection.classList.remove('hidden');
+    
+    if (currentMode === 'webcam') {
+        if (!webcam) await setupWebcam();
+        window.requestAnimationFrame(webcamLoop);
+        startBtn.classList.add('hidden');
+        retryBtn.classList.remove('hidden');
+    } else {
+        if (!imagePreview.src || imagePreview.classList.contains('hidden')) {
+            alert("사진을 먼저 업로드해주세요.");
+            return;
         }
-      } catch (error) {
-        submitBtn.textContent = '오류 발생. 다시 시도해 주세요.';
-        submitBtn.style.backgroundColor = '#d45555';
-        
-        setTimeout(() => {
-          submitBtn.textContent = originalText;
-          submitBtn.disabled = false;
-          submitBtn.style.backgroundColor = '';
-        }, 3000);
-      }
-    });
-  }
+        await predict(imagePreview);
+        startBtn.classList.add('hidden');
+        retryBtn.classList.remove('hidden');
+    }
+});
 
-  initDisqus();
+// Retry
+retryBtn.addEventListener('click', () => {
+    resultSection.classList.add('hidden');
+    retryBtn.classList.add('hidden');
+    startBtn.classList.remove('hidden');
+    
+    if (currentMode === 'upload') {
+        imagePreview.classList.add('hidden');
+        imagePreview.src = "";
+        uploadContainer.querySelector('.upload-label').classList.remove('hidden');
+        imageUpload.value = "";
+    }
+});
+
+// Initialize on Load
+window.addEventListener('DOMContentLoaded', () => {
+    initModel().then(() => {
+        // Automatically start webcam setup if in webcam mode
+        if (currentMode === 'webcam') {
+            setupWebcam().catch(err => console.error("Webcam setup failed:", err));
+        }
+    });
 });
